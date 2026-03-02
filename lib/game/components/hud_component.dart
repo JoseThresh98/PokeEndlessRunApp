@@ -19,7 +19,7 @@ class HudComponent extends PositionComponent {
 
     _scoreText = TextComponent(
       text: 'Score: 0',
-      position: Vector2(16, 16),
+      position: Vector2(16, 48),
       textRenderer: TextPaint(
         style: const TextStyle(
           color: AppColors.scoreColor,
@@ -31,7 +31,7 @@ class HudComponent extends PositionComponent {
 
     _coinsText = TextComponent(
       text: '🪙 0',
-      position: Vector2(16, 40),
+      position: Vector2(16,72),
       textRenderer: TextPaint(
         style: const TextStyle(
           color: AppColors.coinColor,
@@ -42,7 +42,7 @@ class HudComponent extends PositionComponent {
 
     _gemsText = TextComponent(
       text: '💎 0',
-      position: Vector2(16, 60),
+      position: Vector2(16,92),
       textRenderer: TextPaint(
         style: const TextStyle(
           color: AppColors.gemColor,
