@@ -5,6 +5,7 @@ import 'data/repositories/score_repository.dart';
 import 'game/biome_run_game.dart';
 import 'presentation/screens/main_menu_screen.dart';
 import 'presentation/screens/game_over_screen.dart';
+import 'presentation/widgets/creature_swap_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,9 +90,14 @@ class _AppNavigatorState extends State<AppNavigator> {
     switch (_screen) {
       case 'game':
         screen = Scaffold(
-          body: GameWidget(
-            key: ValueKey(_gameKey),
-            game: _game!,
+          body: Stack(
+            children: [
+              GameWidget(
+                key: ValueKey(_gameKey),
+                game: _game!,
+              ),
+              CreatureSwapBar(game: _game!),
+            ],
           ),
         );
         break;
