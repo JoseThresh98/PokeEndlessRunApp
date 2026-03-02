@@ -1,12 +1,15 @@
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
+import 'package:flame/collisions.dart';
 import '../core/constants/app_constants.dart';
 import '../data/repositories/score_repository.dart';
 import 'components/world_component.dart';
 import 'components/player_component.dart';
 import 'components/hud_component.dart';
+import 'components/spawner_component.dart';
 
-class BiomeRunGame extends FlameGame with TapCallbacks {
+class BiomeRunGame extends FlameGame
+    with TapCallbacks, HasCollisionDetection {
 
   late PlayerComponent player;
   late WorldComponent gameWorld;
@@ -36,6 +39,9 @@ class BiomeRunGame extends FlameGame with TapCallbacks {
 
     hud = HudComponent(game: this);
     await add(hud);
+
+    await add(SpawnerComponent());
+    add(ScreenHitbox());
   }
 
   @override

@@ -1,10 +1,11 @@
 import 'package:flame/components.dart';
+import 'package:flame/collisions.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/creature_type.dart';
 import '../../core/theme/app_colors.dart';
 
-class PlayerComponent extends RectangleComponent {
+class PlayerComponent extends RectangleComponent with CollisionCallbacks {
   static const double groundY = 436.0;
 
   double _velocityY = 0;
@@ -22,10 +23,15 @@ class PlayerComponent extends RectangleComponent {
   );
 
   @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    add(RectangleHitbox());
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
 
-    // Gravity
     if (!_isOnGround) {
       _velocityY += AppConstants.gravity * dt;
       position.y += _velocityY * dt;
@@ -37,7 +43,6 @@ class PlayerComponent extends RectangleComponent {
       }
     }
 
-    // Ability cooldown
     if (_abilityCooldownTimer > 0) {
       _abilityCooldownTimer -= dt;
     } else {

@@ -1,20 +1,15 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'data/local/hive_service.dart';
+import 'data/repositories/score_repository.dart';
+import 'game/biome_run_game.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveService.init();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final scoreRepository = ScoreRepository();
+  final game = BiomeRunGame(scoreRepository: scoreRepository);
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('PokeRun - Loading...'),
-        ),
-      ),
-    );
-  }
+  runApp(GameWidget(game: game));
 }
