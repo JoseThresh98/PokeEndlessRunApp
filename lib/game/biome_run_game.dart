@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/collisions.dart';
+import 'package:flutter/material.dart';
 import '../core/constants/app_constants.dart';
 import '../data/repositories/score_repository.dart';
 import 'components/world_component.dart';
@@ -16,30 +17,32 @@ class BiomeRunGame extends FlameGame
   late HudComponent hud;
 
   final ScoreRepository scoreRepository;
+  final VoidCallback onGameOver;
 
   int currentScore = 0;
   int sessionCoins = 0;
   int sessionGems = 0;
   bool isGameOver = false;
+  double groundY = 0;
 
   double _gameSpeed = AppConstants.gameSpeed;
   double get gameSpeed => _gameSpeed;
 
-  BiomeRunGame({required this.scoreRepository});
+  BiomeRunGame({
+    required this.scoreRepository,
+    required this.onGameOver,
+  });
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
+    groundY = size.y * 0.85;
     gameWorld = WorldComponent();
     await add(gameWorld);
-
     player = PlayerComponent();
     await add(player);
-
     hud = HudComponent(game: this);
     await add(hud);
-
     await add(SpawnerComponent());
     add(ScreenHitbox());
   }
@@ -48,7 +51,6 @@ class BiomeRunGame extends FlameGame
   void update(double dt) {
     super.update(dt);
     if (isGameOver) return;
-
     currentScore += (dt * AppConstants.scorePerMeter * _gameSpeed / 100).round();
     _gameSpeed += AppConstants.speedIncrement * dt;
   }
@@ -73,20 +75,9 @@ class BiomeRunGame extends FlameGame
   Future<void> triggerGameOver() async {
     isGameOver = true;
     pauseEngine();
-
     await scoreRepository.updateHighScore(currentScore);
     await scoreRepository.addCoins(sessionCoins);
     await scoreRepository.addGems(sessionGems);
-  }
-
-  void restartGame() {
-    currentScore = 0;
-    sessionCoins = 0;
-    sessionGems = 0;
-    isGameOver = false;
-    _gameSpeed = AppConstants.gameSpeed;
-    resumeEngine();
-    removeAll(children);
-    onLoad();
+    onGameOver(); // ← triggers Navigator.push in Flutter
   }
 }

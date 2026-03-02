@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/creature_type.dart';
 import '../../core/theme/app_colors.dart';
+import 'package:flame/game.dart';
+import '../biome_run_game.dart';
 
-class PlayerComponent extends RectangleComponent with CollisionCallbacks {
-  static const double groundY = 436.0;
+class PlayerComponent extends RectangleComponent
+    with CollisionCallbacks, HasGameReference<BiomeRunGame> {
+
+  double get groundY => game.groundY - size.y;
 
   double _velocityY = 0;
   bool _isOnGround = true;
@@ -18,13 +22,14 @@ class PlayerComponent extends RectangleComponent with CollisionCallbacks {
   PlayerComponent()
       : super(
     size: Vector2(64, 64),
-    position: Vector2(100, groundY),
+    position: Vector2(100, 400),
     paint: Paint()..color = AppColors.fireType,
   );
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    position.y = groundY;
     add(RectangleHitbox());
   }
 

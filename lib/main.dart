@@ -3,13 +3,116 @@ import 'package:flutter/material.dart';
 import 'data/local/hive_service.dart';
 import 'data/repositories/score_repository.dart';
 import 'game/biome_run_game.dart';
+import 'presentation/screens/main_menu_screen.dart';
+import 'presentation/screens/game_over_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveService.init();
+  runApp(const PokeRunApp());
+}
 
-  final scoreRepository = ScoreRepository();
-  final game = BiomeRunGame(scoreRepository: scoreRepository);
+class PokeRunApp extends StatelessWidget {
+  const PokeRunApp({super.key});
 
-  runApp(GameWidget(game: game));
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFF1A1A2E),
+        canvasColor: const Color(0xFF1A1A2E),
+        colorScheme: const ColorScheme.dark(
+          surface: Color(0xFF1A1A2E),
+        ),
+      ),
+      color: const Color(0xFF1A1A2E), // ← app-level background
+      home: const AppNavigator(),
+    );
+  }
+}
+
+class AppNavigator extends StatefulWidget {
+  const AppNavigator({super.key});
+
+  @override
+  State<AppNavigator> createState() => _AppNavigatorState();
+}
+
+class _AppNavigatorState extends State<AppNavigator> {
+  final ScoreRepository _scoreRepository = ScoreRepository();
+
+  // Screens: 'menu', 'game', 'gameover'
+  String _screen = 'menu';
+  BiomeRunGame? _game;
+  int _gameKey = 0;
+
+  void _goToGame() {
+    setState(() {
+      _gameKey++;
+      _game = BiomeRunGame(
+        scoreRepository: _scoreRepository,
+        onGameOver: _goToGameOver,
+      );
+      _screen = 'game';
+    });
+  }
+
+  void _goToGameOver() {
+    setState(() {
+      _screen = 'gameover';
+    });
+  }
+
+  void _restartGame() {
+    setState(() {
+      _gameKey++;
+      _game = BiomeRunGame(
+        scoreRepository: _scoreRepository,
+        onGameOver: _goToGameOver,
+      );
+      _screen = 'game';
+    });
+  }
+
+  void _goToMenu() {
+    setState(() {
+      _screen = 'menu';
+      _game = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget screen;
+
+    switch (_screen) {
+      case 'game':
+        screen = Scaffold(
+          body: GameWidget(
+            key: ValueKey(_gameKey),
+            game: _game!,
+          ),
+        );
+        break;
+      case 'gameover':
+        screen = GameOverScreen(
+          game: _game!,
+          scoreRepository: _scoreRepository,
+          onRestart: _restartGame,
+          onMenu: _goToMenu,
+        );
+        break;
+      default:
+        screen = MainMenuScreen(
+          scoreRepository: _scoreRepository,
+          onPlay: _goToGame,
+        );
+    }
+
+    return Container(
+      color: const Color(0xFF1A1A2E), // ← dark background always present
+      child: screen,
+    );
+  }
 }

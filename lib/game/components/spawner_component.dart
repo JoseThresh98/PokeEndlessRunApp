@@ -38,18 +38,17 @@ class SpawnerComponent extends Component
   void _spawnObstacle() {
     final height = _random.nextDouble() * 40 + 40;
     game.add(ObstacleComponent(
-      position: Vector2(850, 500 - height),
+      position: Vector2(game.size.x + 50, game.groundY - height),
       size: Vector2(30, height),
     ));
   }
 
   void _spawnCollectible() {
     final isGem = _random.nextDouble() < 0.15;
-    final yPos = _random.nextDouble() * 150 + 300;
+    final yPos = game.groundY - (_random.nextDouble() * 120 + 30);
     game.add(CoinComponent(
-      position: Vector2(850, yPos),
-      collectibleType:
-      isGem ? CollectibleType.gem : CollectibleType.coin,
+      position: Vector2(game.size.x + 50, yPos),
+      collectibleType: isGem ? CollectibleType.gem : CollectibleType.coin,
     ));
   }
 }
