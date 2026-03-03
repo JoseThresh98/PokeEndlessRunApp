@@ -9,26 +9,26 @@ extension BiomeTypeExtension on BiomeType {
   String get backgroundPath {
     switch (this) {
       case BiomeType.forest:
-        return 'images/backgrounds/forest_bg.png';
+        return 'backgrounds/forest_bg.png';
       case BiomeType.volcano:
-        return 'images/backgrounds/volcano_bg.png';
+        return 'backgrounds/volcano_bg.png';
       case BiomeType.ocean:
-        return 'images/backgrounds/ocean_bg.png';
+        return 'backgrounds/ocean_bg.png';
       case BiomeType.crystal:
-        return 'images/backgrounds/crystal_bg.png';
+        return 'backgrounds/crystal_bg.png';
     }
   }
 
   String get groundPath {
     switch (this) {
       case BiomeType.forest:
-        return 'images/ground/forest_ground.png';
+        return 'ground/forest_ground.png';
       case BiomeType.volcano:
-        return 'images/ground/volcano_ground.png';
+        return 'ground/volcano_ground.png';
       case BiomeType.ocean:
-        return 'images/ground/ocean_ground.png';
+        return 'ground/ocean_ground.png';
       case BiomeType.crystal:
-        return 'images/ground/crystal_ground.png';
+        return 'ground/crystal_ground.png';
     }
   }
 
@@ -36,25 +36,25 @@ extension BiomeTypeExtension on BiomeType {
     switch (this) {
       case BiomeType.forest:
         return [
-          'images/obstacles/obstacle_log.png',
-          'images/obstacles/obstacle_mossy_rock.png',
-          'images/obstacles/obstacle_bush.png',
-          'images/obstacles/obstacle_purple_mushrooms.png',
+          'obstacles/obstacle_log.png',
+          'obstacles/obstacle_mossy_rock.png',
+          'obstacles/obstacle_bush.png',
+          'obstacles/obstacle_purple_mushrooms.png',
         ];
       case BiomeType.volcano:
         return [
-          'images/obstacles/obstacle_crystalLava.png',
-          'images/obstacles/obstacle_lavaRock.png',
+          'obstacles/obstacle_crystalLava.png',
+          'obstacles/obstacle_lavaRock.png',
         ];
       case BiomeType.ocean:
         return [
-          'images/obstacles/obstacle_Crab.png',
-          'images/obstacles/obstacle_coral.png',
+          'obstacles/obstacle_Crab.png',
+          'obstacles/obstacle_coral.png',
         ];
       case BiomeType.crystal:
         return [
-          'images/obstacles/obstacle_TotemCrystalCave.png',
-          'images/obstacles/obstacle_crystalCave.png',
+          'obstacles/obstacle_TotemCrystalCave.png',
+          'obstacles/obstacle_crystalCave.png',
         ];
     }
   }

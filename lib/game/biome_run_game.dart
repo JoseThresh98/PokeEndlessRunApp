@@ -8,6 +8,7 @@ import 'components/world_component.dart';
 import 'components/player_component.dart';
 import 'components/hud_component.dart';
 import 'components/spawner_component.dart';
+import 'biomes/biome_type.dart';
 
 class BiomeRunGame extends FlameGame
     with TapCallbacks, HasCollisionDetection {
@@ -36,6 +37,7 @@ class BiomeRunGame extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
     groundY = size.y * 0.85;
     gameWorld = WorldComponent();
     await add(gameWorld);
@@ -79,5 +81,9 @@ class BiomeRunGame extends FlameGame
     await scoreRepository.addCoins(sessionCoins);
     await scoreRepository.addGems(sessionGems);
     onGameOver(); // ← triggers Navigator.push in Flutter
+  }
+
+  void onBiomeChanged(BiomeType biome) {
+    // spawner will use this to pick correct obstacles
   }
 }

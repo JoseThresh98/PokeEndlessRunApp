@@ -1,57 +1,62 @@
 import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/creature_type.dart';
-import '../../core/theme/app_colors.dart';
-import 'package:flame/game.dart';
 import '../biome_run_game.dart';
 
-class PlayerComponent extends RectangleComponent
+class PlayerComponent extends SpriteComponent
     with CollisionCallbacks, HasGameReference<BiomeRunGame> {
 
   double get groundY => game.groundY - size.y;
 
+  CreatureType currentType = CreatureType.fire;
   double _velocityY = 0;
   bool _isOnGround = true;
-  bool _isAbilityActive = false;
   double _abilityCooldownTimer = 0;
 
-  CreatureType currentType = CreatureType.fire;
-
-  PlayerComponent()
-      : super(
-    size: Vector2(64, 64),
-    position: Vector2(100, 400),
-    paint: Paint()..color = AppColors.fireType,
-  );
+  PlayerComponent() : super(size: Vector2(80, 80));
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    position.y = groundY;
+    position = Vector2(100, groundY);
+    await _loadSprite();
     add(RectangleHitbox());
+  }
+
+  Future<void> _loadSprite() async {
+    sprite = await Sprite.load(_getSpritePath());
+  }
+
+  String _getSpritePath() {
+    switch (currentType) {
+      case CreatureType.fire:
+        return 'creatures/emberon.png';
+      case CreatureType.water:
+        return 'creatures/aquafin.png';
+      case CreatureType.psychic:
+        return 'creatures/psywyn.png';
+      case CreatureType.grass:
+        return 'creatures/thornveil.png';
+    }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-
     if (!_isOnGround) {
       _velocityY += AppConstants.gravity * dt;
       position.y += _velocityY * dt;
-
       if (position.y >= groundY) {
         position.y = groundY;
         _velocityY = 0;
         _isOnGround = true;
       }
     }
-
     if (_abilityCooldownTimer > 0) {
       _abilityCooldownTimer -= dt;
-    } else {
-      _isAbilityActive = false;
     }
   }
 
@@ -62,49 +67,30 @@ class PlayerComponent extends RectangleComponent
     }
   }
 
-  void useAbility() {
-    if (_abilityCooldownTimer > 0) return;
-
-    _isAbilityActive = true;
-    _abilityCooldownTimer = _getCooldown();
-
-    switch (currentType) {
-      case CreatureType.fire:
-        _fireDash();
-        break;
-      case CreatureType.water:
-        _waterGlide();
-        break;
-      case CreatureType.psychic:
-        _psychicTeleport();
-        break;
-      case CreatureType.grass:
-        _grassVineSwing();
-        break;
-    }
-  }
-
   void swapCreature(CreatureType type) {
     currentType = type;
-    paint.color = _getTypeColor();
+    _loadSprite();
   }
 
-  void _fireDash() {
-    position.x += 80;
-  }
-
-  void _waterGlide() {
-    _velocityY = AppConstants.jumpForce * 0.5;
-    _isOnGround = false;
-  }
-
-  void _psychicTeleport() {
-    position.x += 120;
-  }
-
-  void _grassVineSwing() {
-    _velocityY = AppConstants.jumpForce * 0.75;
-    _isOnGround = false;
+  void useAbility() {
+    if (_abilityCooldownTimer > 0) return;
+    _abilityCooldownTimer = _getCooldown();
+    switch (currentType) {
+      case CreatureType.fire:
+        position.x += 80;
+        break;
+      case CreatureType.water:
+        _velocityY = AppConstants.jumpForce * 0.5;
+        _isOnGround = false;
+        break;
+      case CreatureType.psychic:
+        position.x += 120;
+        break;
+      case CreatureType.grass:
+        _velocityY = AppConstants.jumpForce * 0.75;
+        _isOnGround = false;
+        break;
+    }
   }
 
   double _getCooldown() {
@@ -120,21 +106,7 @@ class PlayerComponent extends RectangleComponent
     }
   }
 
-  Color _getTypeColor() {
-    switch (currentType) {
-      case CreatureType.fire:
-        return AppColors.fireType;
-      case CreatureType.water:
-        return AppColors.waterType;
-      case CreatureType.psychic:
-        return AppColors.psychicType;
-      case CreatureType.grass:
-        return AppColors.grassType;
-    }
-  }
-
   double get abilityCooldownPercent =>
       _abilityCooldownTimer / _getCooldown();
-
   bool get isAbilityReady => _abilityCooldownTimer <= 0;
 }

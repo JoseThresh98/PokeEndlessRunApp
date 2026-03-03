@@ -1,26 +1,27 @@
 import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
 import '../biome_run_game.dart';
 import 'player_component.dart';
 
-class ObstacleComponent extends RectangleComponent
+class ObstacleComponent extends SpriteComponent
     with HasGameReference<BiomeRunGame>, CollisionCallbacks {
+
+  final String spritePath;
 
   ObstacleComponent({
     required Vector2 position,
     required Vector2 size,
+    required this.spritePath,
   }) : super(
     position: position,
     size: size,
-    paint: Paint()..color = AppColors.accent,
   );
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    sprite = await Sprite.load(spritePath);
     add(RectangleHitbox());
   }
 
