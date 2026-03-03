@@ -65,11 +65,11 @@ extension BiomeTypeExtension on BiomeType {
       case BiomeType.forest:
         return 0;
       case BiomeType.volcano:
-        return 500;
+        return 50;
       case BiomeType.ocean:
-        return 1000;
+        return 100;
       case BiomeType.crystal:
-        return 1500;
+        return 150;
     }
   }
 

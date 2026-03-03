@@ -3,6 +3,8 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import '../biome_run_game.dart';
 import '../biomes/biome_type.dart';
+import 'package:flutter/material.dart';
+
 
 class WorldComponent extends Component with HasGameReference<BiomeRunGame> {
   BiomeType currentBiome = BiomeType.forest;
@@ -23,24 +25,23 @@ class WorldComponent extends Component with HasGameReference<BiomeRunGame> {
   }
 
   Future<void> _loadBiome(BiomeType biome) async {
-    // Remove old components
     removeAll(children);
 
     final size = game.size;
 
-    // Background
-    final bgSprite = await Sprite.load(biome.backgroundPath);
-    _background = SpriteComponent(
-      sprite: bgSprite,
+    // Solid color background instead of image
+    final bgColor = _getBiomeColor(biome);
+    final background = RectangleComponent(
       position: Vector2.zero(),
-      size: Vector2(size.x, size.y),
+      size: size,
+      paint: Paint()..color = bgColor,
     );
-    await add(_background);
+    await add(background);
 
-    // Ground — two tiles side by side for seamless scrolling
+    // Ground sprite
     final groundSprite = await Sprite.load(biome.groundPath);
     final groundHeight = size.y * 0.18;
-    final groundY = size.y * 0.82;
+    final groundY = size.y * 0.72;
 
     _groundLeft = SpriteComponent(
       sprite: groundSprite,
@@ -56,6 +57,19 @@ class WorldComponent extends Component with HasGameReference<BiomeRunGame> {
 
     await add(_groundLeft);
     await add(_groundRight);
+  }
+
+  Color _getBiomeColor(BiomeType biome) {
+    switch (biome) {
+      case BiomeType.forest:
+        return const Color(0xFF1A1A2E);
+      case BiomeType.volcano:
+        return const Color(0xFF2D0A00);
+      case BiomeType.ocean:
+        return const Color(0xFF001A2D);
+      case BiomeType.crystal:
+        return const Color(0xFF1A0029);
+    }
   }
 
   @override

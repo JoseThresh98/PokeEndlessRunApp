@@ -22,7 +22,11 @@ class ObstacleComponent extends SpriteComponent
   Future<void> onLoad() async {
     await super.onLoad();
     sprite = await Sprite.load(spritePath);
-    add(RectangleHitbox());
+    // Smaller hitbox than visual size to be more forgiving
+    add(RectangleHitbox(
+      size: Vector2(size.x * 0.6, size.y * 0.7),
+      position: Vector2(size.x * 0.2, size.y * 0.3),
+    ));
   }
 
   @override

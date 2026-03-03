@@ -96,14 +96,17 @@ class _AppNavigatorState extends State<AppNavigator> {
     switch (_screen) {
       case 'game':
         screen = Scaffold(
-          body: Stack(
-            children: [
-              GameWidget(
-                key: ValueKey(_gameKey),
-                game: _game!,
-              ),
-              CreatureSwapBar(game: _game!),
-            ],
+          body: SafeArea(
+            bottom: true, // ← respects navigation bar
+            child: Stack(
+              children: [
+                GameWidget(
+                  key: ValueKey(_gameKey),
+                  game: _game!,
+                ),
+                CreatureSwapBar(game: _game!),
+              ],
+            ),
           ),
         );
         break;

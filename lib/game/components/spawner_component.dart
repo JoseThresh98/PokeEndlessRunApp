@@ -37,21 +37,22 @@ class SpawnerComponent extends Component
   }
 
   void _spawnObstacle() {
-    final height = _random.nextDouble() * 40 + 40;
     final biome = game.gameWorld.currentBiome;
     final obstacles = biome.obstaclePaths;
     final spritePath = obstacles[_random.nextInt(obstacles.length)];
+    final width = 70.0 + _random.nextDouble() * 30;
+    final height = 80.0 + _random.nextDouble() * 20;
 
     game.add(ObstacleComponent(
-      position: Vector2(game.size.x + 50, game.groundY - height),
-      size: Vector2(80, height),
+      position: Vector2(game.size.x + 50, game.groundY - height + 10),
+      size: Vector2(width, height),
       spritePath: spritePath,
     ));
   }
 
   void _spawnCollectible() {
     final isGem = _random.nextDouble() < 0.15;
-    final yPos = game.groundY - (_random.nextDouble() * 120 + 30);
+    final yPos = game.groundY - (_random.nextDouble() * 100 + 20);
     game.add(CoinComponent(
       position: Vector2(game.size.x + 50, yPos),
       collectibleType: isGem ? CollectibleType.gem : CollectibleType.coin,

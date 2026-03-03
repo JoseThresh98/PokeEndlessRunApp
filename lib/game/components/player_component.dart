@@ -9,7 +9,7 @@ import '../biome_run_game.dart';
 class PlayerComponent extends SpriteComponent
     with CollisionCallbacks, HasGameReference<BiomeRunGame> {
 
-  double get groundY => game.groundY - size.y;
+  double get groundY => game.groundY - size.y + 10;
 
   CreatureType currentType = CreatureType.fire;
   double _velocityY = 0;
@@ -23,7 +23,11 @@ class PlayerComponent extends SpriteComponent
     await super.onLoad();
     position = Vector2(100, groundY);
     await _loadSprite();
-    add(RectangleHitbox());
+    // Smaller hitbox for fairer collisions
+    add(RectangleHitbox(
+      size: Vector2(size.x * 0.5, size.y * 0.7),
+      position: Vector2(size.x * 0.25, size.y * 0.3),
+    ));
   }
 
   Future<void> _loadSprite() async {
