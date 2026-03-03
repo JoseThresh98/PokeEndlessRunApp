@@ -38,7 +38,7 @@ class BiomeRunGame extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
-    groundY = size.y * 0.85;
+    groundY = size.y * 0.72;
     gameWorld = WorldComponent();
     await add(gameWorld);
     player = PlayerComponent();
