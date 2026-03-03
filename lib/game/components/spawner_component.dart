@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../biome_run_game.dart';
 import 'obstacle_component.dart';
 import 'coin_component.dart';
+import '../biomes/biome_type.dart';
 
 class SpawnerComponent extends Component
     with HasGameReference<BiomeRunGame> {
@@ -37,9 +38,14 @@ class SpawnerComponent extends Component
 
   void _spawnObstacle() {
     final height = _random.nextDouble() * 40 + 40;
+    final biome = game.gameWorld.currentBiome;
+    final obstacles = biome.obstaclePaths;
+    final spritePath = obstacles[_random.nextInt(obstacles.length)];
+
     game.add(ObstacleComponent(
       position: Vector2(game.size.x + 50, game.groundY - height),
-      size: Vector2(30, height),
+      size: Vector2(80, height),
+      spritePath: spritePath,
     ));
   }
 
