@@ -23,6 +23,9 @@ class CreatureModel extends HiveObject {
   @HiveField(5)
   final String spritePath;
 
+  @HiveField(6)
+  final int gemCost;
+
   CreatureModel({
     required this.id,
     required this.name,
@@ -30,7 +33,10 @@ class CreatureModel extends HiveObject {
     required this.isUnlocked,
     required this.unlockCost,
     required this.spritePath,
+    this.gemCost = 0,
   });
+
+  bool get requiresGems => gemCost > 0;
 
   CreatureType get type => CreatureType.values[typeIndex];
 
@@ -48,7 +54,7 @@ class CreatureModel extends HiveObject {
       name: 'Aquafin',
       typeIndex: CreatureType.water.index,
       isUnlocked: false,
-      unlockCost: 50,
+      unlockCost: 500,
       spritePath: 'assets/images/creatures/aquafin.png',
     ),
     CreatureModel(
@@ -56,7 +62,8 @@ class CreatureModel extends HiveObject {
       name: 'Psywyn',
       typeIndex: CreatureType.psychic.index,
       isUnlocked: false,
-      unlockCost: 100,
+      unlockCost: 0,
+      gemCost: 1000,
       spritePath: 'assets/images/creatures/psywyn.png',
     ),
     CreatureModel(
@@ -64,7 +71,8 @@ class CreatureModel extends HiveObject {
       name: 'Thornveil',
       typeIndex: CreatureType.grass.index,
       isUnlocked: false,
-      unlockCost: 75,
+      unlockCost: 0,
+      gemCost: 2000,
       spritePath: 'assets/images/creatures/thornveil.png',
     ),
   ];

@@ -2,9 +2,11 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'data/local/hive_service.dart';
 import 'data/repositories/score_repository.dart';
+import 'data/repositories/creature_repository.dart';
 import 'game/biome_run_game.dart';
 import 'presentation/screens/main_menu_screen.dart';
 import 'presentation/screens/game_over_screen.dart';
+import 'presentation/screens/shop_screen.dart';
 import 'presentation/widgets/creature_swap_bar.dart';
 
 void main() async {
@@ -27,7 +29,7 @@ class PokeRunApp extends StatelessWidget {
           surface: Color(0xFF1A1A2E),
         ),
       ),
-      color: const Color(0xFF1A1A2E), // ← app-level background
+      color: const Color(0xFF1A1A2E),
       home: const AppNavigator(),
     );
   }
@@ -42,8 +44,8 @@ class AppNavigator extends StatefulWidget {
 
 class _AppNavigatorState extends State<AppNavigator> {
   final ScoreRepository _scoreRepository = ScoreRepository();
+  final CreatureRepository _creatureRepository = CreatureRepository();
 
-  // Screens: 'menu', 'game', 'gameover'
   String _screen = 'menu';
   BiomeRunGame? _game;
   int _gameKey = 0;
@@ -83,6 +85,10 @@ class _AppNavigatorState extends State<AppNavigator> {
     });
   }
 
+  void _goToShop() {
+    setState(() => _screen = 'shop');
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget screen;
@@ -109,15 +115,23 @@ class _AppNavigatorState extends State<AppNavigator> {
           onMenu: _goToMenu,
         );
         break;
+      case 'shop':
+        screen = ShopScreen(
+          scoreRepository: _scoreRepository,
+          creatureRepository: _creatureRepository,
+          onBack: _goToMenu,
+        );
+        break;
       default:
         screen = MainMenuScreen(
           scoreRepository: _scoreRepository,
           onPlay: _goToGame,
+          onShop: _goToShop,
         );
     }
 
     return Container(
-      color: const Color(0xFF1A1A2E), // ← dark background always present
+      color: const Color(0xFF1A1A2E),
       child: screen,
     );
   }

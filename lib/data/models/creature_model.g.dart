@@ -23,13 +23,14 @@ class CreatureModelAdapter extends TypeAdapter<CreatureModel> {
       isUnlocked: fields[3] as bool,
       unlockCost: fields[4] as int,
       spritePath: fields[5] as String,
+      gemCost: fields[6] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, CreatureModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class CreatureModelAdapter extends TypeAdapter<CreatureModel> {
       ..writeByte(4)
       ..write(obj.unlockCost)
       ..writeByte(5)
-      ..write(obj.spritePath);
+      ..write(obj.spritePath)
+      ..writeByte(6)
+      ..write(obj.gemCost);
   }
 
   @override
