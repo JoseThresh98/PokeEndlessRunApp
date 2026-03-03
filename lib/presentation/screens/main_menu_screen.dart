@@ -5,11 +5,13 @@ import '../../core/utils/score_formatter.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final VoidCallback onPlay;
+  final VoidCallback onShop;
   final ScoreRepository scoreRepository;
 
   const MainMenuScreen({
     super.key,
     required this.onPlay,
+    required this.onShop,
     required this.scoreRepository,
   });
 
@@ -70,6 +72,7 @@ class MainMenuScreen extends StatelessWidget {
                 ),
               ],
             ),
+            //Play Button
             const SizedBox(height: 48),
             ElevatedButton(
               onPressed: onPlay,
@@ -77,6 +80,7 @@ class MainMenuScreen extends StatelessWidget {
                 backgroundColor: AppColors.accent,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 64, vertical: 20),
+
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -88,6 +92,28 @@ class MainMenuScreen extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 4,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            //Shop button
+            ElevatedButton(
+              onPressed: onShop,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 64, vertical: 20),
+
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                '🛒  SHOP',
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

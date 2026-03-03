@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/creature_type.dart';
 import '../../core/theme/app_colors.dart';
 import '../../game/biome_run_game.dart';
+import '../../data/repositories/creature_repository.dart';
+import '../../data/models/creature_model.dart';
 
 class CreatureSwapBar extends StatefulWidget {
   final BiomeRunGame game;
@@ -14,6 +16,26 @@ class CreatureSwapBar extends StatefulWidget {
 
 class _CreatureSwapBarState extends State<CreatureSwapBar> {
   CreatureType _selected = CreatureType.fire;
+  List<CreatureModel> _creatures = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCreatures();
+  }
+
+  void _loadCreatures() {
+    final repo = CreatureRepository();
+    setState(() {
+      _creatures = repo.getAllCreatures();
+    });
+  }
+
+  bool _isUnlocked(CreatureType type) {
+    return _creatures
+        .where((c) => c.type == type && c.isUnlocked)
+        .isNotEmpty;
+  }
 
   Color _typeColor(CreatureType type) {
     switch (type) {
@@ -55,9 +77,17 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
   }
 
   void _swap(CreatureType type) {
-    setState(() {
-      _selected = type;
-    });
+    if (!_isUnlocked(type)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${_typeName(type)} is locked! Unlock in the shop.'),
+          backgroundColor: Colors.red.shade800,
+          duration: const Duration(seconds: 1),
+        ),
+      );
+      return;
+    }
+    setState(() => _selected = type);
     widget.game.player.swapCreature(type);
   }
 
@@ -80,12 +110,12 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
               width: 70,
               height: 70,
               decoration: BoxDecoration(
-                color: _typeColor(_selected).withOpacity(0.9),
+                color: _typeColor(_selected).withValues(alpha: 0.9),
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: _typeColor(_selected).withOpacity(0.6),
+                    color: _typeColor(_selected).withValues(alpha: 0.6),
                     blurRadius: 12,
                     spreadRadius: 2,
                   ),
@@ -105,6 +135,7 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: CreatureType.values.map((type) {
               final isSelected = _selected == type;
+              final unlocked = _isUnlocked(type);
               return GestureDetector(
                 onTap: () => _swap(type),
                 child: AnimatedContainer(
@@ -115,7 +146,9 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? _typeColor(type)
-                        : _typeColor(type).withOpacity(0.4),
+                        : unlocked
+                        ? _typeColor(type).withValues(alpha: 0.4)
+                        : Colors.grey.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected ? Colors.white : Colors.transparent,
@@ -124,7 +157,7 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
                     boxShadow: isSelected
                         ? [
                       BoxShadow(
-                        color: _typeColor(type).withOpacity(0.6),
+                        color: _typeColor(type).withValues(alpha: 0.6),
                         blurRadius: 8,
                         spreadRadius: 1,
                       ),
@@ -135,7 +168,7 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        _typeEmoji(type),
+                        unlocked ? _typeEmoji(type) : '🔒',
                         style: TextStyle(
                           fontSize: isSelected ? 22 : 18,
                         ),
@@ -143,7 +176,7 @@ class _CreatureSwapBarState extends State<CreatureSwapBar> {
                       Text(
                         _typeName(type),
                         style: TextStyle(
-                          color: Colors.white,
+                          color: unlocked ? Colors.white : Colors.grey,
                           fontSize: 7,
                           fontWeight: isSelected
                               ? FontWeight.bold

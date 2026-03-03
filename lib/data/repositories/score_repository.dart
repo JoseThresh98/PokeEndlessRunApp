@@ -41,4 +41,11 @@ class ScoreRepository {
       totalCoins: current.totalCoins - amount,
     ));
   }
+
+  Future<void> spendGems(int amount) async {
+    final current = getScore();
+    await saveScore(current.copyWith(
+      totalGems: current.totalGems - amount,
+    ));
+  }
 }
